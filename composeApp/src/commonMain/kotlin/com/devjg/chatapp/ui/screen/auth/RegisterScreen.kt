@@ -1,6 +1,5 @@
 package com.devjg.chatapp.ui.screen.auth
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +13,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -23,13 +21,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.devjg.chatapp.domain.model.User
@@ -38,20 +31,23 @@ import com.devjg.chatapp.ui.components.scaffold.BottomNavScreen
 import com.devjg.chatapp.ui.navigation.Destinations
 
 @Composable
-fun AuthScreen(
-    authViewModel: AuthViewModel,
-    navController: NavController
-) {
+fun RegisterScreen(authViewModel: AuthViewModel, navController: NavController) {
+
     var email by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var isLoginClicked by remember { mutableStateOf(false) }
+    var confirmPassword by remember { mutableStateOf("") }
+    var isRegisterClicked: Boolean by remember { mutableStateOf(false) }
     val authState = authViewModel.authState.collectAsState()
 
-    // La autenticación solo se debe realizar cuando isLoginClicked es verdadero
-    LaunchedEffect(isLoginClicked) {
-        if (isLoginClicked) {
-            val user = User(email = email, password = password)
-            authViewModel.authenticate(user)
+    LaunchedEffect(isRegisterClicked) {
+        if (isRegisterClicked) {
+            if (password == confirmPassword) {
+                val user = User(email = email, password = password, username = username)
+                authViewModel.register(user)
+            } else {
+                isRegisterClicked = false
+            }
         }
     }
 
@@ -60,75 +56,79 @@ fun AuthScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Iniciar Sesión", style = MaterialTheme.typography.h3)
+        Text("Registrarse", style = MaterialTheme.typography.h4)
+        Spacer(modifier = Modifier.height(24.dp))
 
-        Spacer(modifier = Modifier.height(32.dp))
+        OutlinedTextField(
+            value = username,
+            onValueChange = { username = it },
+            label = { Text("Nombre de usuario") },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
             label = { Text("Correo electrónico") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
             label = { Text("Contraseña") },
-            singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        OutlinedTextField(
+            value = confirmPassword,
+            onValueChange = { confirmPassword = it },
+            label = { Text("Confirmar contraseña") },
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Text(
-            text = "Olvidaste tu contraseña?",
-            color = MaterialTheme.colors.primary,
-            modifier = Modifier.clickable {
-
-            }.padding(8.dp), textDecoration = TextDecoration.Underline
-        )
-
         Button(
             onClick = {
-                if (!isLoginClicked) {  // Verificamos que no se haga clic mientras ya estamos autenticando
-                    isLoginClicked = true
+                if (!isRegisterClicked) {
+                    isRegisterClicked = true
                 }
             },
             modifier = Modifier.fillMaxWidth(),
-            enabled = !isLoginClicked
+            enabled = !isRegisterClicked
         ) {
-            Text("Iniciar sesión")
+            Text("Crear cuenta")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
-            text = "¿No tenés cuenta? Registrate",
-            color = MaterialTheme.colors.primary,
-            style = MaterialTheme.typography.body2.copy(textDecoration = TextDecoration.Underline),
-            modifier = Modifier.clickable { navController.navigate(Destinations.RegisterScreen.route) }
-        )
-
         BaseResourceComponent(
             resource = authState.value,
-            isLoadingDialog = isLoginClicked,
+            isLoadingDialog = isRegisterClicked,
             onSuccess = {
-                isLoginClicked = false
-                // Navegar a la siguiente pantalla si la autenticación fue exitosa
+                isRegisterClicked = false
                 navController.navigate(BottomNavScreen.Home.route) {
-                    popUpTo(Destinations.AuthScreen.route) { inclusive = true }
+                    popUpTo(Destinations.RegisterScreen.route) { inclusive = true }
                 }
             },
-            onError = { message ->
-                isLoginClicked = false
-                // Mostrar el error si la autenticación falla
-                Text(text = message, color = MaterialTheme.colors.error)
+            onError = {
+                isRegisterClicked = false
+                Text("Error: $it", color = MaterialTheme.colors.error)
             }
         )
     }

@@ -5,15 +5,12 @@ import com.devjg.chatapp.data.repository.auth.AuthRepositoryImpl
 import com.devjg.chatapp.domain.repository.AuthRespository
 import com.devjg.chatapp.domain.usecases.AuthenticateUseCase
 import com.devjg.chatapp.ui.screen.auth.AuthViewModel
-import io.ktor.client.HttpClient
 import org.koin.compose.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 private val dataModule = module {
-    single { HttpClient() }
     single { ChatApi() }
     single<AuthRespository> { AuthRepositoryImpl(get()) }
-
 }
 
 private val domainModule = module {

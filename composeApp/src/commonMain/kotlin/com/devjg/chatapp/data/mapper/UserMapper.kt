@@ -7,6 +7,7 @@ import com.devjg.chatapp.domain.model.User
 // Domain → DTO
 fun User.toDTO(): UserRequestDTO {
     return UserRequestDTO(
+        username= this.username ?: "",
         email = this.email ?: "",
         password = this.password ?: ""
     )

@@ -8,7 +8,8 @@ sealed class Destinations(val route: String) {
     //AUTH SCREEN
     data object AuthScreen : Destinations("authScreen")
 
-    //HOME SCREEN
-    data object HomeScreen :Destinations("homeScreen")
+    //REGISTER SCREEN
+    data object RegisterScreen : Destinations("registerScreen")
+
 
 }

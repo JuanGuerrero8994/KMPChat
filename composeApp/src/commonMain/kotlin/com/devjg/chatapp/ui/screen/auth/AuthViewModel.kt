@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devjg.chatapp.core.Resource
 import com.devjg.chatapp.domain.model.User
+import com.devjg.chatapp.domain.usecases.AuthAction
 import com.devjg.chatapp.domain.usecases.AuthenticateUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +30,11 @@ class AuthViewModel(private val authUseCase: AuthenticateUseCase):ViewModel() {
     }
 
     fun authenticate(user: User) = fetchData(_authState) {
-        authUseCase.invoke(user)
+        authUseCase(user, AuthAction.LOGIN)
+    }
+
+    fun register(user: User) = fetchData(_authState) {
+        authUseCase(user, AuthAction.REGISTER)
     }
 
 }
