@@ -1,6 +1,5 @@
 package com.devjg.chatapp.ui.screen.auth
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,8 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.devjg.chatapp.domain.model.User
@@ -34,20 +31,19 @@ import com.devjg.chatapp.ui.components.scaffold.BottomNavScreen
 import com.devjg.chatapp.ui.navigation.Destinations
 
 @Composable
-fun AuthScreen(
-    authViewModel: AuthViewModel,
-    navController: NavController
-) {
+fun ChangePasswordScreen(authViewModel: AuthViewModel, navController: NavController) {
     var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var isLoginClicked by remember { mutableStateOf(false) }
-    val authState = authViewModel.authState.collectAsState()
+    var currentPassword by remember { mutableStateOf("") }
+    var newPassword by remember { mutableStateOf("") }
+    var confirmNewPassword by remember { mutableStateOf("") }
+    var isChangePaswwordClicked by remember { mutableStateOf(false) }
 
-    // La autenticación solo se debe realizar cuando isLoginClicked es verdadero
-    LaunchedEffect(isLoginClicked) {
-        if (isLoginClicked) {
-            val user = User(email = email, password = password)
-            authViewModel.authenticate(user)
+    val authState by authViewModel.authState.collectAsState()
+
+    LaunchedEffect(isChangePaswwordClicked) {
+        if (isChangePaswwordClicked) {
+            val user = User(email = email, password = currentPassword)
+            authViewModel.changePassword(user,newPassword)
         }
     }
 
@@ -56,76 +52,85 @@ fun AuthScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Iniciar Sesión", style = MaterialTheme.typography.h3)
-
-        Spacer(modifier = Modifier.height(32.dp))
+        Text("Cambiar Contraseña", style = MaterialTheme.typography.h4)
+        Spacer(modifier = Modifier.height(24.dp))
 
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
             label = { Text("Correo electrónico") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Contraseña") },
-            singleLine = true,
+            value = currentPassword,
+            onValueChange = { currentPassword = it },
+            label = { Text("Contraseña actual") },
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        Text(
-            text = "Olvidaste tu contraseña?",
-            color = MaterialTheme.colors.primary,
-            modifier = Modifier.clickable {
-                navController.navigate(Destinations.ChangePasswordScreen.route)
-            }.padding(8.dp), textDecoration = TextDecoration.Underline, textAlign = TextAlign.End
+        OutlinedTextField(
+            value = newPassword,
+            onValueChange = { newPassword = it },
+            label = { Text("Nueva contraseña") },
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        OutlinedTextField(
+            value = confirmNewPassword,
+            onValueChange = { confirmNewPassword = it },
+            label = { Text("Confirmar nueva contraseña") },
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
 
         Button(
             onClick = {
-                if (!isLoginClicked) {  // Verificamos que no se haga clic mientras ya estamos autenticando
-                    isLoginClicked = true
+                if (!isChangePaswwordClicked) {
+                    isChangePaswwordClicked = true
                 }
             },
             modifier = Modifier.fillMaxWidth(),
-            enabled = !isLoginClicked
+            enabled =   !isChangePaswwordClicked
         ) {
-            Text("Iniciar sesión")
+            Text("Cambiar contraseña")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
-            text = "¿No tenés cuenta? Registrate",
-            color = MaterialTheme.colors.primary,
-            style = MaterialTheme.typography.body2.copy(textDecoration = TextDecoration.Underline),
-            modifier = Modifier.clickable { navController.navigate(Destinations.RegisterScreen.route) }
-        )
+
 
         BaseResourceComponent(
-            resource = authState.value,
-            isLoadingDialog = isLoginClicked,
+            resource = authState,
+            isLoadingDialog = isChangePaswwordClicked,
             onSuccess = {
-                isLoginClicked = false
+                isChangePaswwordClicked = false
                 navController.navigate(BottomNavScreen.Home.route) {
                     popUpTo(Destinations.AuthScreen.route) { inclusive = true }
                 }
             },
             onError = { message ->
-                isLoginClicked = false
+                isChangePaswwordClicked = false
                 Text(text = message, color = MaterialTheme.colors.error)
             }
         )
     }
 }
-
-

@@ -30,11 +30,15 @@ class AuthViewModel(private val authUseCase: AuthenticateUseCase):ViewModel() {
     }
 
     fun authenticate(user: User) = fetchData(_authState) {
-        authUseCase(user, AuthAction.LOGIN)
+        authUseCase(user, action = AuthAction.LOGIN)
     }
 
     fun register(user: User) = fetchData(_authState) {
-        authUseCase(user, AuthAction.REGISTER)
+        authUseCase(user, action= AuthAction.REGISTER)
+    }
+
+    fun changePassword(user: User,newPassword:String) = fetchData(_authState){
+        authUseCase(user, newPassword =newPassword ,AuthAction.FORGOT_PASSWORD)
     }
 
 }

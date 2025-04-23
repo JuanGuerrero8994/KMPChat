@@ -9,5 +9,6 @@ object Endpoints {
 
     const val USER_REGISTER = "users/register"
 
+    const val USER_CHANGE_PASSWORD = "users/change-password"
 
 }

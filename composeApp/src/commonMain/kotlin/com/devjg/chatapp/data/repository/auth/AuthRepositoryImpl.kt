@@ -28,7 +28,6 @@ class AuthRepositoryImpl(private val api: ChatApi) : AuthRespository {
                 contentType(ContentType.Application.Json)
                 setBody(requestDto)
             }
-            // 🔐 El token es un String, no un objeto complejo
             val apiResponse = response.body<ApiResponseDTO<String>>()
             val token = apiResponse.data
 
@@ -61,6 +60,25 @@ class AuthRepositoryImpl(private val api: ChatApi) : AuthRespository {
             emit(Resource.Error(Exception(e.message)))
         }
     }
+
+    override suspend fun changePassword(user: User, newPassword: String): Flow<Resource<String>> = flow {
+            emit(Resource.Loading)
+            try {
+                val requestDto = user.toDTO()
+                requestDto.newPassword = newPassword
+
+                val response = api.httpClient.post {
+                    buildUrl(endpoint = Endpoints.USER_CHANGE_PASSWORD)
+                    contentType(ContentType.Application.Json)
+                    setBody(requestDto)
+                }
+
+                val apiResponse = response.body<ApiResponseDTO<String>>()
+                emit(Resource.Success("${apiResponse.messages}"))
+            } catch (e: Exception) {
+                emit(Resource.Error(Exception(e.message)))
+            }
+        }
 
     override suspend fun validateToken(token: String): Flow<Resource<User>> {
         TODO("Not yet implemented")

@@ -9,6 +9,7 @@ import com.devjg.chatapp.ui.screen.FavouriteScreen
 import com.devjg.chatapp.ui.screen.HomeScreen
 import com.devjg.chatapp.ui.screen.auth.AuthScreen
 import com.devjg.chatapp.ui.screen.auth.AuthViewModel
+import com.devjg.chatapp.ui.screen.auth.ChangePasswordScreen
 import com.devjg.chatapp.ui.screen.auth.RegisterScreen
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -19,11 +20,11 @@ fun NavGraph(navController: NavHostController) {
     val authViewModel: AuthViewModel = koinViewModel()
 
     NavHost(navController = navController, startDestination = Destinations.AuthScreen.route) {
+
         // Rutas simples
         addRoute(navController, Destinations.AuthScreen.route) { AuthScreen(authViewModel, it) }
-
-
         addRoute(navController, Destinations.RegisterScreen.route) { RegisterScreen(authViewModel, it) }
+        addRoute(navController, Destinations.ChangePasswordScreen.route) { ChangePasswordScreen(authViewModel, it) }
 
         /*RUTAS NAV BAR*/
         addBottomNavRoute(navController, BottomNavScreen.Home.route) { HomeScreen(it) }

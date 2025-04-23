@@ -11,5 +11,6 @@ sealed class Destinations(val route: String) {
     //REGISTER SCREEN
     data object RegisterScreen : Destinations("registerScreen")
 
-
+    //CHANGE PASSWORD SCREEN
+    data object ChangePasswordScreen :Destinations("changePasswordScreen")
 }
