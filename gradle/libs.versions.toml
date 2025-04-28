@@ -86,6 +86,7 @@ ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "k
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-websockets = { module ="io.ktor:ktor-client-websockets" , version.ref ="ktor" }
 
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logbackClassic" }
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }

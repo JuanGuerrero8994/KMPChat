@@ -38,7 +38,7 @@ fun RegisterScreen(authViewModel: AuthViewModel, navController: NavController) {
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var isRegisterClicked: Boolean by remember { mutableStateOf(false) }
-    val authState = authViewModel.authState.collectAsState()
+    val authState = authViewModel.state.collectAsState()
 
     LaunchedEffect(isRegisterClicked) {
         if (isRegisterClicked) {

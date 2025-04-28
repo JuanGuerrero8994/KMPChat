@@ -1,4 +1,4 @@
-package com.devjg.chatapp.domain.usecases
+package com.devjg.chatapp.domain.usecases.auth
 
 import com.devjg.chatapp.domain.model.User
 import com.devjg.chatapp.domain.repository.AuthRespository

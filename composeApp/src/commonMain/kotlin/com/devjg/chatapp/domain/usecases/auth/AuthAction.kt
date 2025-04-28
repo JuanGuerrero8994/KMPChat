@@ -1,4 +1,4 @@
-package com.devjg.chatapp.domain.usecases
+package com.devjg.chatapp.domain.usecases.auth
 
 enum class AuthAction {
     LOGIN,

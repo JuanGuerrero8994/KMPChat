@@ -41,7 +41,7 @@ fun AuthScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isLoginClicked by remember { mutableStateOf(false) }
-    val authState = authViewModel.authState.collectAsState()
+    val authState = authViewModel.state.collectAsState()
 
     // La autenticación solo se debe realizar cuando isLoginClicked es verdadero
     LaunchedEffect(isLoginClicked) {

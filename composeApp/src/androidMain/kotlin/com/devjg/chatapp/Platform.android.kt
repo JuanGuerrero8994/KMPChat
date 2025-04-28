@@ -37,3 +37,5 @@ actual fun createHttpClient(): HttpClient {
         }
     }
 }
+
+actual fun currentTimeMillis(): Long = System.currentTimeMillis()

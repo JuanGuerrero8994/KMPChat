@@ -6,7 +6,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.appendPathSegments
 import io.ktor.http.takeFrom
 
-fun HttpRequestBuilder.buildUrl(endpoint: String, queryParams: Map<String, String> = emptyMap()) {
+fun HttpRequestBuilder.buildUrl(endpoint: String, queryParams: Map<String, String> = emptyMap(), token: String? = null) {
     url {
         takeFrom(Endpoints.BASE_URL)
         appendPathSegments(endpoint)
@@ -15,6 +15,7 @@ fun HttpRequestBuilder.buildUrl(endpoint: String, queryParams: Map<String, Strin
         }
     }
     accept(ContentType.Application.Json)
+    token?.let { headers.append("Authorization", "Bearer $it") }
 }
 
 

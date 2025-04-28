@@ -40,7 +40,7 @@ fun ChangePasswordScreen(authViewModel: AuthViewModel, navController: NavControl
 
     var errorMessages by remember { mutableStateOf<List<String>>(emptyList()) }
 
-    val authState = authViewModel.authState.collectAsState()
+    val authState = authViewModel.state.collectAsState()
 
     LaunchedEffect(isLoginClicked) {
         if (isLoginClicked && errorMessages.isEmpty()) {
