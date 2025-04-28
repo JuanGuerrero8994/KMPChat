@@ -36,100 +36,130 @@ fun ChangePasswordScreen(authViewModel: AuthViewModel, navController: NavControl
     var currentPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
     var confirmNewPassword by remember { mutableStateOf("") }
-    var isChangePaswwordClicked by remember { mutableStateOf(false) }
+    var isLoginClicked by remember { mutableStateOf(false) }
 
-    val authState by authViewModel.authState.collectAsState()
+    var errorMessages by remember { mutableStateOf<List<String>>(emptyList()) }
 
-    LaunchedEffect(isChangePaswwordClicked) {
-        if (isChangePaswwordClicked) {
+    val authState = authViewModel.authState.collectAsState()
+
+    LaunchedEffect(isLoginClicked) {
+        if (isLoginClicked && errorMessages.isEmpty()) {
             val user = User(email = email, password = currentPassword)
-            authViewModel.changePassword(user,newPassword)
+            authViewModel.changePassword(user, newPassword)
         }
     }
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(24.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Cambiar Contraseña", style = MaterialTheme.typography.h4)
-        Spacer(modifier = Modifier.height(24.dp))
+        Text("Cambiar contraseña", style = MaterialTheme.typography.h5)
 
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // Email
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
             label = { Text("Correo electrónico") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
+        // Contraseña actual
         OutlinedTextField(
             value = currentPassword,
             onValueChange = { currentPassword = it },
             label = { Text("Contraseña actual") },
+            singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
+        // Nueva contraseña
         OutlinedTextField(
             value = newPassword,
             onValueChange = { newPassword = it },
             label = { Text("Nueva contraseña") },
+            singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
+        // Confirmación de contraseña
         OutlinedTextField(
             value = confirmNewPassword,
             onValueChange = { confirmNewPassword = it },
             label = { Text("Confirmar nueva contraseña") },
+            singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
+        // Mostrar errores
+        errorMessages.forEach { message ->
+            Text(
+                text = message,
+                color = MaterialTheme.colors.error,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
-                if (!isChangePaswwordClicked) {
-                    isChangePaswwordClicked = true
+                val errors = mutableListOf<String>()
+
+                if (email.isBlank()) errors.add("El correo electrónico no puede estar vacío.")
+                if (currentPassword.isBlank()) errors.add("La contraseña actual no puede estar vacía.")
+                if (newPassword.isBlank()) errors.add("La nueva contraseña no puede estar vacía.")
+                if (confirmNewPassword.isBlank()) errors.add("Debes confirmar la nueva contraseña.")
+                if (newPassword != confirmNewPassword) errors.add("Las contraseñas no coinciden.")
+                if (newPassword == currentPassword && newPassword.isNotEmpty()) errors.add("La nueva contraseña no puede ser igual a la anterior.")
+
+                errorMessages = errors
+
+                if (errors.isEmpty()) {
+                    isLoginClicked = true
+                    val user = User(email = email, password = currentPassword)
+                    authViewModel.changePassword(user, newPassword)
                 }
             },
             modifier = Modifier.fillMaxWidth(),
-            enabled =   !isChangePaswwordClicked
+            enabled = !isLoginClicked
         ) {
             Text("Cambiar contraseña")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-
-
         BaseResourceComponent(
-            resource = authState,
-            isLoadingDialog = isChangePaswwordClicked,
+            resource = authState.value,
+            isLoadingDialog = isLoginClicked,
             onSuccess = {
-                isChangePaswwordClicked = false
+                isLoginClicked = false
                 navController.navigate(BottomNavScreen.Home.route) {
                     popUpTo(Destinations.AuthScreen.route) { inclusive = true }
                 }
             },
             onError = { message ->
-                isChangePaswwordClicked = false
-                Text(text = message, color = MaterialTheme.colors.error)
+                isLoginClicked = false
+                errorMessages = listOf(message)
             }
         )
     }

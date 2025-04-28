@@ -54,14 +54,20 @@ class AuthRepositoryImpl(private val api: ChatApi) : AuthRespository {
             }
 
             val apiResponse = response.body<ApiResponseDTO<String>>()
-            emit(Resource.Success(apiResponse.messages.toString()))
+
+            if (apiResponse.status == "Success") {
+                emit(Resource.Success("${apiResponse.messages}"))
+            } else {
+                emit(Resource.Error(Exception("${apiResponse.messages}")))
+            }
 
         } catch (e: Exception) {
             emit(Resource.Error(Exception(e.message)))
         }
     }
 
-    override suspend fun changePassword(user: User, newPassword: String): Flow<Resource<String>> = flow {
+    override suspend fun changePassword(user: User, newPassword: String): Flow<Resource<String>> =
+        flow {
             emit(Resource.Loading)
             try {
                 val requestDto = user.toDTO()
@@ -74,7 +80,11 @@ class AuthRepositoryImpl(private val api: ChatApi) : AuthRespository {
                 }
 
                 val apiResponse = response.body<ApiResponseDTO<String>>()
-                emit(Resource.Success("${apiResponse.messages}"))
+                if (apiResponse.status == "Success") {
+                    emit(Resource.Success("${apiResponse.messages}"))
+                } else {
+                    emit(Resource.Error(Exception("${apiResponse.messages}")))
+                }
             } catch (e: Exception) {
                 emit(Resource.Error(Exception(e.message)))
             }
