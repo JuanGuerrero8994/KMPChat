@@ -16,13 +16,12 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.serialization.json.Json
 
-class ChatRepositoryImpl(private val apiChatApi: ChatApi):ChatRepository {
+class ChatRepositoryImpl(private val apiChatApi: ChatApi) : ChatRepository {
 
     private var socketSession: io.ktor.client.plugins.websocket.DefaultClientWebSocketSession? = null
     private val incomingMessages = Channel<Message>(Channel.BUFFERED)
 
-
-    override suspend fun connectToChat(roomId: String): Flow<Resource<Unit>> = flow {
+    override suspend fun connectToChat(roomId: String): Flow<Resource<String>> = flow {
         emit(Resource.Loading)
 
         try {
@@ -35,7 +34,7 @@ class ChatRepositoryImpl(private val apiChatApi: ChatApi):ChatRepository {
 
             apiChatApi.httpClient.webSocket(urlString = socketUrl) {
                 socketSession = this
-                emit(Resource.Success(Unit))
+                emit(Resource.Success("Connected"))
 
                 for (frame in incoming) {
                     if (frame is io.ktor.websocket.Frame.Text) {
@@ -55,16 +54,23 @@ class ChatRepositoryImpl(private val apiChatApi: ChatApi):ChatRepository {
         }
     }
 
-    override suspend fun sendMessage(message: Message) {
-        socketSession?.sendSerialized(message.toRequestDTO())
-    }
+     override suspend fun sendMessage(message: Message):Flow<Resource<String>> = flow {
+         emit(Resource.Success("Mensaje enviado"))
+         socketSession?.sendSerialized(message.toRequestDTO())
+     }
 
-    override fun observeMessages(): Flow<Message> = incomingMessages.receiveAsFlow()
 
 
-    override suspend fun disconnect() {
-        socketSession?.close()
-        socketSession = null
+    override suspend fun disconnect(): Flow<Resource<String>> = flow {
+        try {
+            socketSession?.close()
+            socketSession = null
+            emit(Resource.Success("Not Connected"))
+        } catch (e: Exception) {
+            emit(Resource.Error(e))
+        }
     }
 
 }
+
+

@@ -33,7 +33,7 @@ private val domainModule = module {
 private val viewModelModule = module {
     viewModel { AuthViewModel(get()) }
     viewModel { MessageViewModel(get()) }
-    //viewModel { ChatViewModel(get()) }
+    viewModel { ChatViewModel(get()) }
 }
 
 

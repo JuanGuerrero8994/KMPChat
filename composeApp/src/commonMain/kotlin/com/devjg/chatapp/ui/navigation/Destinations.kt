@@ -13,4 +13,7 @@ sealed class Destinations(val route: String) {
 
     //CHANGE PASSWORD SCREEN
     data object ChangePasswordScreen :Destinations("changePasswordScreen")
+
+    //CHAT SCREEN
+    data object ChatScreen : Destinations("chatScreen")
 }

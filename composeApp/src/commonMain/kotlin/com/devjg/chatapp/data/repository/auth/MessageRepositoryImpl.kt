@@ -72,7 +72,7 @@ class MessageRepositoryImpl(private val api: ChatApi) : MessageRepository {
         emit(Resource.Loading)
         try {
             val response = api.httpClient.get {
-                buildUrl(endpoint = "messages/chat/$chatRoomId")
+                buildUrl(endpoint = "${chatRoomId}/messages")
             }
             val apiResponse = response.body<ApiResponseDTO<List<MessageResponseDTO>>>()
 

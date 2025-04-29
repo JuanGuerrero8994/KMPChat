@@ -85,9 +85,9 @@ fun AuthScreen(
         Text(
             text = "Olvidaste tu contraseña?",
             color = MaterialTheme.colors.primary,
-            modifier = Modifier.clickable {
-                navController.navigate(Destinations.ChangePasswordScreen.route)
-            }.padding(8.dp), textDecoration = TextDecoration.Underline, textAlign = TextAlign.End
+            style = MaterialTheme.typography.body2,
+            modifier = Modifier.clickable { navController.navigate(Destinations.ChangePasswordScreen.route)}.
+            padding(2.dp).fillMaxWidth().align(Alignment.End)
         )
 
         Button(
@@ -107,7 +107,7 @@ fun AuthScreen(
         Text(
             text = "¿No tenés cuenta? Registrate",
             color = MaterialTheme.colors.primary,
-            style = MaterialTheme.typography.body2.copy(textDecoration = TextDecoration.Underline),
+            style = MaterialTheme.typography.body2,
             modifier = Modifier.clickable { navController.navigate(Destinations.RegisterScreen.route) }
         )
 

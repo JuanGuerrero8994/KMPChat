@@ -24,6 +24,7 @@ kotlinx-coroutines = "1.10.1"
 
 # LOGCAT
 ktorClientJs = "2.3.6"
+ktorClientWebsockets = "3.1.1"
 logbackClassic = "1.5.16"
 mockkCommon = "1.13.5"
 napier = "2.7.1"
@@ -88,11 +89,9 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-websockets = { module ="io.ktor:ktor-client-websockets" , version.ref ="ktor" }
 
-logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logbackClassic" }
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 
 # KOIN
-koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koin" }
 koin-core = { group = "io.insert-koin", name = "koin-core" }
 koin-compose = { group = "io.insert-koin", name = "koin-compose" }
 koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel", version.ref = "koinCompose"}

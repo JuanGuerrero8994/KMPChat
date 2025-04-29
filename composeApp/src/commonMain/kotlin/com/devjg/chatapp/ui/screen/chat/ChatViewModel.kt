@@ -1,35 +1,24 @@
 package com.devjg.chatapp.ui.screen.chat
 
+import com.devjg.chatapp.core.Resource
 import com.devjg.chatapp.domain.model.Message
 import com.devjg.chatapp.domain.usecases.chat.ChatAction
 import com.devjg.chatapp.domain.usecases.chat.ChatUseCase
-import com.devjg.chatapp.domain.usecases.message.MessageUseCase
 import com.devjg.chatapp.ui.screen.base.BaseViewModel
+import kotlinx.coroutines.flow.Flow
 
-class ChatViewModel<T>(private val chatUseCase: ChatUseCase) : BaseViewModel<T>() {
+class ChatViewModel(private val chatUseCase: ChatUseCase) :  BaseViewModel<String>() {
+
 
     fun connect(roomId: String) {
-        fetchData(_state) {
-            chatUseCase(ChatAction.CONNECT(roomId))
-        }
-        observeIncomingMessages()
-    }
-
-    private fun observeIncomingMessages() {
-        fetchData(_state) {
-            chatUseCase(ChatAction.OBSERVE_MESSAGES)
-        }
+        fetchData(_state) { chatUseCase(action = ChatAction.CONNECT, roomId = roomId) }
     }
 
     fun sendMessage(message: Message) {
-        fetchData(_state) {
-            chatUseCase(ChatAction.SEND_MESSAGE,message = message)
-        }
+        fetchData(_state) { chatUseCase(action = ChatAction.SEND_MESSAGE, message = message) }
     }
 
     fun disconnect() {
-        fetchData(_state) {
-            chatUseCase(ChatAction.DISCONNECT)
-        }
+        fetchData(_state) { chatUseCase(action = ChatAction.DISCONNECT) }
     }
 }

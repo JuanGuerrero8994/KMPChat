@@ -22,7 +22,7 @@ actual fun getPlatform(): Platform = AndroidPlatform()
 actual fun createHttpClient(): HttpClient {
     return HttpClient(CIO) {
         engine {
-            proxy = Proxy(Proxy.Type.HTTP, InetSocketAddress("proxy.jus.gov.ar", 8080))
+          //  proxy = Proxy(Proxy.Type.HTTP, InetSocketAddress("proxy.jus.gov.ar", 8080))
         }
         install(ContentNegotiation) {
             json(Json { ignoreUnknownKeys = true })
@@ -35,6 +35,9 @@ actual fun createHttpClient(): HttpClient {
                 }
             }
         }
+
+        install(io.ktor.client.plugins.websocket.WebSockets)
+
     }
 }
 

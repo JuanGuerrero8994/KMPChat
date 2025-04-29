@@ -19,8 +19,6 @@ class MessageViewModel(private val messageUseCase: MessageUseCase) : BaseViewMod
 
     // Get messages by chat room ID
     fun getMessagesByChatRoomId(chatRoomId: String) {
-        fetchData(_state) {
-            messageUseCase(action = MessageAction.GET_BY_CHAT_ROOM, chatRoomId = chatRoomId)
-        }
+        fetchData(_state) { messageUseCase(action = MessageAction.GET_BY_CHAT_ROOM, chatRoomId = chatRoomId) }
     }
 }

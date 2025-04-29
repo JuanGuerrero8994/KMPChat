@@ -6,8 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 
 interface ChatRepository {
-    suspend fun connectToChat(roomId: String): Flow<Resource<Unit>>
-    suspend fun sendMessage(message: Message)
-    fun observeMessages(): Flow<Message>
-    suspend fun disconnect()
+    suspend fun connectToChat(roomId: String): Flow<Resource<String>>
+    suspend fun sendMessage(message: Message) :Flow<Resource<String>>
+    suspend fun disconnect():Flow<Resource<String>>
 }
